@@ -1,7 +1,8 @@
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-
+import { Navigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 export default function Login(){
     return <>
@@ -15,7 +16,9 @@ export default function Login(){
         <Form.Control type="password" placeholder="Password" />
       </Form.Group>
 
-      <h6 style={{float: 'right'}}>Forget Password</h6>
+      <h6 style={{float: 'right'}}>
+        <Link to={'/forgot-password'}>Forget Password</Link>
+        </h6>
       <Button variant="primary" style={{width: '100%'}}>
         Login
       </Button>

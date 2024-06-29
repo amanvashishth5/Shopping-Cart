@@ -21,7 +21,7 @@ export default function UserAuthentication(){
         <Col></Col>
         <Col>
         <Tabs
-      defaultActiveKey="login"
+      defaultActiveKey="signup"
       id="uncontrolled-tab-example"
       className="mb-3"
     >

@@ -1,11 +1,44 @@
 
 
+import { useReducer, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
 export default function Signup(){
+   
+  function reducer(state, action) {
+    switch (action.type) {
+      case 'fname':
+        return { fname: action.value };
+      case 'lname':
+        return { lname: action.value };
+      default:
+        throw new Error();
+    }
+  }
+
+  const initialState = { 
+    type: '',
+    fname: '',
+    lname: '',
+    email: '',
+    address: '',
+    country: '',
+    state: '',
+    city: '',
+    pincode: '',
+    isd: '',
+    mobile: '',
+    fax: '',
+    phone: '',
+    password: '',
+    confirmPassword: ''
+   };
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+
     return <>
     <Form>
     <Form.Group as={Col} controlId="formGridEmail">
@@ -38,12 +71,12 @@ export default function Signup(){
       <Row className="mb-3">
         <Form.Group as={Col} controlId="formGridEmail">
           <Form.Label>First Name</Form.Label>
-          <Form.Control type="text" placeholder="First Name" />
+          <Form.Control type="text" placeholder="First Name" value={state.fname} onChange={(e) => dispatch({ type: 'fname', value: e.target.value })}/>
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridPassword">
           <Form.Label>Last Name</Form.Label>
-          <Form.Control type="text" placeholder="Last Name" />
+          <Form.Control type="text" placeholder="Last Name"  value={state.lname} onChange={(e) => dispatch({ type: 'lname', value: e.target.value })}/>
         </Form.Group>
       </Row>
 
