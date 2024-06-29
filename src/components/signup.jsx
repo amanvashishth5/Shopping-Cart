@@ -1,5 +1,3 @@
-
-
 import { useReducer, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -7,8 +5,8 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { countryJSON } from '../constants';
 
-export default function Signup(){
-   
+export default function Signup() {
+
   function reducer(state, action) {
     switch (action.type) {
       case 'fname':
@@ -20,13 +18,29 @@ export default function Signup(){
       case 'country':
         return { country: action.value };
       case 'state':
-          return { state: action.value };
+        return { state: action.value };
+      case 'city':
+        return { state: action.value };
+      case 'pincode':
+        return { state: action.value };
+      case 'isd':
+        return { state: action.value };
+      case 'mobile':
+        return { state: action.value };
+      case 'fax':
+        return { state: action.value };
+      case 'phone':
+        return { state: action.value };
+      case 'password':
+        return { state: action.value };
+      case 'confirmpassword':
+        return { state: action.value };
       default:
         throw new Error();
     }
   }
 
-  const initialState = { 
+  const initialState = {
     type: '',
     fname: '',
     lname: '',
@@ -42,20 +56,20 @@ export default function Signup(){
     phone: '',
     password: '',
     confirmPassword: ''
-   };
+  };
 
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const getStateBasedOnCountry = () => {
-      const countryData = countryJSON.find(item=>item.name === state.country)
-      const countryState = countryData && countryData.state || [];
-      return countryState.map(item => <option>{item}</option>)
-    }
+    const countryData = countryJSON.find(item => item.name === state.country)
+    const countryState = countryData && countryData.state || [];
+    return countryState.map(item => <option>{item}</option>)
+  }
 
-    return <>
+  return <>
     <Form>
-    <Form.Group as={Col} controlId="formGridEmail">
+      <Form.Group as={Col} controlId="formGridEmail">
         <Form.Label>Individual/Enterprise/Goverment</Form.Label>
         <div key={`inline-radio`} className="mb-3">
           <Form.Check
@@ -79,106 +93,112 @@ export default function Signup(){
             id={`inline-radio-3`}
           />
         </div>
-    </Form.Group>
-    
-    
+      </Form.Group>
+
+
       <Row className="mb-3">
         <Form.Group as={Col} controlId="formGridEmail">
           <Form.Label>First Name</Form.Label>
-          <Form.Control type="text" placeholder="First Name" value={state.fname} onChange={(e) => dispatch({ type: 'fname', value: e.target.value })}/>
+          <Form.Control type="text" placeholder="First Name" value={state.fname} onChange={(e) => dispatch({ type: 'fname', value: e.target.value })} />
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridPassword">
           <Form.Label>Last Name</Form.Label>
-          <Form.Control type="text" placeholder="Last Name"  value={state.lname} onChange={(e) => dispatch({ type: 'lname', value: e.target.value })}/>
+          <Form.Control type="text" placeholder="Last Name" value={state.lname} onChange={(e) => dispatch({ type: 'lname', value: e.target.value })} />
         </Form.Group>
       </Row>
 
       <Form.Group className="mb-3" controlId="formGridEmail">
         <Form.Label>Email</Form.Label>
-        <Form.Control placeholder="Email" value={state.email} onChange={(e) => dispatch({ type: 'email', value: e.target.value })}/>
+        <Form.Control placeholder="Email" value={state.email} onChange={(e) => dispatch({ type: 'email', value: e.target.value })} />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formGridAddress">
         <Form.Label>Address</Form.Label>
-        <Form.Control placeholder="Address" value={state.address} onChange={(e) => dispatch({ type: 'address', value: e.target.value })}/>
+        <Form.Control placeholder="Address" value={state.address} onChange={(e) => dispatch({ type: 'address', value: e.target.value })} />
       </Form.Group>
 
       <Row className="mb-3">
         <Form.Group as={Col} controlId="formGridCountry">
           <Form.Label>Country</Form.Label>
           <Form.Select defaultValue="Choose..." onChange={(e) => dispatch({ type: 'country', value: e.target.value })}>
-            {countryJSON.map((item, index)=>{
+            {countryJSON.map((item, index) => {
               return <option key={index}>{item.name}</option>
             })}
-            </Form.Select>
+          </Form.Select>
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridState">
           <Form.Label>State</Form.Label>
           <Form.Select defaultValue="Choose..." onChange={(e) => dispatch({ type: 'state', value: e.target.value })}>
             {getStateBasedOnCountry()}
-            
+
           </Form.Select>
         </Form.Group>
-        </Row>
+      </Row>
 
-        <Row>
+      <Row>
         <Form.Group as={Col} controlId="formGridCity">
           <Form.Label>City</Form.Label>
-          <Form.Control />
+          <Form.Select Value={state.city} onChange={(e) => dispatch({ type: 'city', value: e.target.value })}></Form.Select>
+          {/* <Form.Control /> */}
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridPincode">
           <Form.Label>Pincode</Form.Label>
-          <Form.Control />
+          <Form.Control Value={state.pincode} onChange={(e) => dispatch({ type: 'pincode', value: e.target.value })}></Form.Control>
+          {/* <Form.Control /> */}
         </Form.Group>
-     
-      {/* <Form.Group className="mb-3" id="formGridCheckbox">
+
+        {/* <Form.Group className="mb-3" id="formGridCheckbox">
         <Form.Check type="checkbox" label="Check me out" />
       </Form.Group> */}
       </Row>
-      
+
       <Row>
-      <Form.Group as={Col} controlId="formGridISDCode">
+        <Form.Group as={Col} controlId="formGridISDCode">
           <Form.Label>ISD Code</Form.Label>
           <Form.Select defaultValue="Choose...">
-            {/* <option>Choose...</option> */}
             <option>...</option>
           </Form.Select>
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridMobile">
           <Form.Label>Mobile Number</Form.Label>
-          <Form.Control />
+          <Form.Control Value={state.mobile} onChange={(e) => dispatch({ type: 'mobile', value: e.target.value })}></Form.Control>
+          {/* <Form.Control /> */}
         </Form.Group>
       </Row>
 
       <Row>
-      <Form.Group as={Col} controlId="formGridFax">
+        <Form.Group as={Col} controlId="formGridFax">
           <Form.Label>Fax</Form.Label>
-          <Form.Control placeholder='011-55541234'/>
+          <Form.Select Value={state.fax} onChange={(e) => dispatch({ type: 'fax', value: e.target.value })}></Form.Select>
+          {/* <Form.Control placeholder='011-55541234'/> */}
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridPhone">
           <Form.Label>Phone</Form.Label>
-          <Form.Control placeholder='011-55541234'/>
+          <Form.Control Value={state.phone} onChange={(e) => dispatch({ type: 'phone', value: e.target.value })}></Form.Control>
+          {/* <Form.Control placeholder='011-55541234'/> */}
         </Form.Group>
       </Row>
 
       <Form.Group className="mb-3" controlId="formGroupPassword">
         <Form.Label>Password</Form.Label>
-        <Form.Control type="password" />
+        <Form.Control type="password" Value={state.password} onChange={(e) => dispatch({ type: 'password', value: e.target.value })}></Form.Control>
+        {/* <Form.Control /> */}
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formGroupConfirmPassword">
         <Form.Label>Confirm Password</Form.Label>
-        <Form.Control type="password" />
+        <Form.Control type="password" Value={state.confirmPassword} onChange={(e) => dispatch({ type: 'confirmpassword', value: e.target.value })}></Form.Control>
+        {/* <Form.Control /> */}
       </Form.Group>
 
-      <Button variant="primary" style={{width: '100%'}}>
+      <Button variant="primary" style={{ width: '100%' }}>
         SIGNUP
       </Button>
     </Form>
-    </>
+  </>
 }
