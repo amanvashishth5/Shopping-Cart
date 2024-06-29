@@ -4,19 +4,20 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { ValidationRegex, countryJSON } from '../constants';
+import { addUser, deleteUser, getUsers } from '../db';
 
-export default function Signup() {
+export default function Signup(props) {
   const initialState = {
-    type: '',
+    type: 'Individual',
     fname: '',
     lname: '',
     email: '',
     address: '',
     country: 'India',
-    state: '',
+    state: 'Uttar Pradesh',
     city: '',
     pincode: '',
-    isd: '',
+    isd: '+91',
     mobile: '',
     fax: '',
     phone: '',
@@ -49,103 +50,105 @@ export default function Signup() {
       case 'type':
         return {...state, type: action.value};
       case 'fname':
-        if(!ValidationRegex.fname.test(state.fname)){
-          setError({...error, fname: 'First name is required and must be 5 digit'})
+        if(!ValidationRegex.fname.test(action.value)){
+          setError({...error, fname: 'First name is required and alpha character length should be 5'})
         } else {
           setError({...error, fname: ''})
         }
         return { ...state, fname: action.value} ;
       case 'lname':
-        if(!ValidationRegex.lname.test(state.lname)){
-          setError({...error, lname: 'Last name is required and must be 5 digit'})
+        if(!ValidationRegex.lname.test(action.value)){
+          setError({...error, lname: 'Last name is required and alpha character length should be 5'})
         } else {
           setError({...error, lname: ''})
         }
         return {...state, lname: action.value};
       case 'address':
-        if(!ValidationRegex.address.test(state.address)){
+        if(!ValidationRegex.address.test(action.value)){
           setError({...error, address: 'Address is required'})
         } else {
           setError({...error, address: ''})
         }
         return {...state, address: action.value};
       case 'email':
-        if(!ValidationRegex.email.test(state.email)){
+        if(!ValidationRegex.email.test(action.value)){
           setError({...error, email: 'email is required and must be in correct syntax'})
         } else {
           setError({...error, email: ''})
         }
         return {...state, email: action.value};
       case 'country':
-        if(!ValidationRegex.country.test(state.country)){
+        if(!ValidationRegex.country.test(action.value)){
           setError({...error, country: 'Country is required'})
         } else {
           setError({...error, country: ''})
         }
         return {...state, country: action.value};
       case 'state':
-        if(!ValidationRegex.state.test(state.state)){
+        if(!ValidationRegex.state.test(action.value)){
           setError({...error, state: 'State is required'})
         } else {
           setError({...error, state: ''})
         }
         return {...state, state: action.value};
       case 'city':
-        if(!ValidationRegex.city.test(state.city)){
+        if(!ValidationRegex.city.test(action.value)){
           setError({...error, city: 'City is required'})
         } else {
           setError({...error, city: ''})
         }
         return {...state, city: action.value};
       case 'pincode':
-        if(!ValidationRegex.pincode.test(state.pincode)){
+        if(!ValidationRegex.pincode.test(action.value)){
           setError({...error, pincode: 'Pincode is required'})
         } else {
           setError({...error, pincode: ''})
         }
         return {...state, pincode: action.value};
       case 'isd':
-        if(!ValidationRegex.isd.test(state.isd)){
+        if(!ValidationRegex.isd.test(action.value)){
           setError({...error, isd: 'ISD is required'})
         } else {
           setError({...error, isd: ''})
         }
         return {...state, isd: action.value};
       case 'mobile':
-        if(!ValidationRegex.mobile.test(state.mobile)){
+        if(!ValidationRegex.mobile.test(action.value)){
           setError({...error, mobile: 'Mobile is required and must be 10 digit long'})
         } else {
           setError({...error, mobile: ''})
         }
         return {...state, mobile: action.value};
       case 'fax':
-        if(!ValidationRegex.fax.test(state.fax)){
+        if(!ValidationRegex.fax.test(action.value)){
           setError({...error, fax: 'fax is required and must be 6 digit'})
         } else {
           setError({...error, fax: ''})
         }
         return {...state, fax: action.value};
       case 'phone':
-        if(!ValidationRegex.phone.test(state.phone)){
+        if(!ValidationRegex.phone.test(action.value)){
           setError({...error, phone: 'Phone is required and must be 6 digit long'})
         } else {
           setError({...error, phone: ''})
         }
         return {...state, phone: action.value};
       case 'password':
-        if(!ValidationRegex.password.test(state.password)){
+        if(!ValidationRegex.password.test(action.value)){
           setError({...error, password: 'Password is required and must be 12 digit long with alphanumeric and special symbols!'})
         } else {
           setError({...error, password: ''})
         }
         return {...state, password: action.value};
       case 'confirmPassword':
-        if(!ValidationRegex.confirmPassword.test(state.confirmPassword)){
-          setError({...error, confirmPassword: 'Confirm Password is required'})
+        if(action.value !== state.password){
+          setError({...error, confirmPassword: 'Confirm password is not matching'})
         } else {
           setError({...error, confirmPassword: ''})
         }
         return {...state, confirmPassword: action.value};
+      case 'reset':
+        return {...initialState}
       default:
         throw new Error();
     }
@@ -159,11 +162,43 @@ export default function Signup() {
     return countryState.map(item => <option>{item}</option>)
   }
 
-  const validateThenSubmit = ()=>{}
+  const checkDisable = () => {
+    const allKeys = Object.keys(error);
+    let isErrorFound = false
+    for(let i=0; i<Object.keys(error).length; i++){
+      if(error[allKeys[i]]){
+        isErrorFound = true
+        break;
+      }
+      if(!state[allKeys[i]]){
+        isErrorFound = true
+        break;
+      }
+    }
+    
+    return isErrorFound
+  }
+  const submitHandler = async ()=>{
+    try{
+      const allUser = await getUsers();
+      const existUser = allUser.find(item => item.email === state.email)
+      if(existUser){
+        alert('This user is already exist with same email. Try with another email');
+        return;
+      }
+      await addUser(state)
+      dispatch({ type: 'reset' })
+      alert('Data saved successfully. Please login to view dashboard')
+      document.getElementById('credentials-tab-login').click()
+    } catch(e){
+      alert('Error occured while saving your data')
+    }
+    
+  }
 
 
   return <>
-    <Form>
+    <Form autocomplete="off">
       <Form.Group as={Col} >
         <Form.Label>Individual/Enterprise/Goverment</Form.Label>
         <div key={`inline-radio`} className="mb-3">
@@ -173,6 +208,7 @@ export default function Signup() {
             name="group1"
             type={'radio'}
             id={`inline-radio-1`}
+            checked={true}
             onChange={() => dispatch({ type: 'type', value: 'Individual' })}
           />
           <Form.Check
@@ -300,9 +336,17 @@ export default function Signup() {
         <Form.Control.Feedback type="invalid">{error.confirmPassword}</Form.Control.Feedback>
       </Form.Group>
 
-      <Button variant="primary" style={{ width: '100%' }} onClick={validateThenSubmit}>
+      <Button disabled={checkDisable()} variant="primary" style={{ width: '100%' }} onClick={submitHandler}>
         SIGNUP
       </Button>
+      <button onClick={async(e)=>{
+        e.preventDefault()
+        console.log(await getUsers())
+      }}>Check</button>
+      <button onClick={async(e)=>{
+        e.preventDefault()
+        await deleteUser()
+      }}>Delete All</button>
     </Form>
   </>
 }

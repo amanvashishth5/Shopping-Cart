@@ -9,9 +9,11 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Login from '../components/login';
 import Signup from '../components/signup';
+import { useRef, useState } from 'react';
 
 export default function UserAuthentication(){
-
+    const loginTabRef = useRef()
+    const [activeTab, setActiveTab] = useState()
     return <>
     <Navbar bg="primary" data-bs-theme="dark" expand="lg" className="bg-body-tertiary user_authentication_navbar"></Navbar>
     
@@ -20,11 +22,11 @@ export default function UserAuthentication(){
         <Col></Col>
         <Col>
         <Tabs
-      defaultActiveKey="signup"
-      id="uncontrolled-tab-example"
+      defaultActiveKey={'signup'}
+      id="credentials"
       className="mb-3"
     >
-      <Tab eventKey="login" title="Login">
+      <Tab eventKey="login" title="Login" itemRef={loginTabRef}>
         <Login/>
       </Tab>
       <Tab eventKey="signup" title="Signup">
