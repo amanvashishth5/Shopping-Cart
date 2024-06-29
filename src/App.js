@@ -6,6 +6,7 @@ import UserAuthentication from './pages/user-authentication';
 import { BrowserRouter, Routes, Route, createBrowserRouter } from 'react-router-dom';
 import NoPageFound from './pages/NoPageFound';
 import { RouterProvider } from 'react-router';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const router = createBrowserRouter([
