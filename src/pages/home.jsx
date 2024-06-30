@@ -36,11 +36,15 @@ export default function Home() {
                 <Col><Product data={i} cart={cart} setCart={setCart}/></Col>
         </>)
     }
+    const capitalizeFirstLetter = (string) =>  {
+        return string.charAt(0).toUpperCase() + string.slice(1)
+    }
+
     useEffect(() => {
         getProducts()
     }, [])
     return <>
-        <Navbar expand="lg" className="bg-body-tertiary">
+        <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
             <Container fluid>
                 <Navbar.Brand href="#">SHOPLANE</Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />
@@ -75,7 +79,7 @@ export default function Home() {
         {categories.map((item, index) => <><Container fluid style={{margin: '10px 0'}}>
             <Row>
                 <Col>
-                    <h4>{item}</h4>
+                    <h4>{capitalizeFirstLetter(item)}</h4>
                 </Col>
             </Row>
 
