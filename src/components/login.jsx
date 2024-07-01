@@ -28,6 +28,7 @@ export default function Login(){
         const isUserExist = allUsers.find((i)=>i.email === email)
         if(isUserExist){
           if(isUserExist.password === password){
+            localStorage.setItem('isLogin', true);
             navigate('/products')
             return;
           }

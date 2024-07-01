@@ -13,11 +13,18 @@ import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Modal from 'react-bootstrap/Modal';
+import { useNavigate } from 'react-router';
 
 export default function Home() {
+    const navigate = useNavigate()
     const [data, setData] = useState([])
     const [categories, setCategories] = useState([])
     const [cart, setCart] = useState([])
+    const [showCart, setShowCart] = useState(false);
+
+    const handleClose = () => setShowCart(false);
+    const handleShow = () => setShowCart(true);
     const getProducts = async () => {
         try {
             const products = await axios.get('https://fakestoreapi.com/products')
@@ -41,7 +48,13 @@ export default function Home() {
     }
 
     useEffect(() => {
-        getProducts()
+        const isLogin = localStorage.getItem('isLogin');
+        if(isLogin){
+            getProducts()
+        } else {
+            navigate('/')
+        }
+        
     }, [])
     return <>
         <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
@@ -62,14 +75,19 @@ export default function Home() {
                     </Nav>
                     <Form className="d-flex">
 
-                        <Button variant="link">Search</Button>
-                        <Button variant="link">
+                        <Button variant="link" onClick={handleShow}>
                             <BiCart />
                             <Badge pill bg="primary">
                                 {cart.length}
                             </Badge>
                         </Button>
-                        <Button variant="link">Search</Button>
+                        <Button variant="link" onClick={()=>{
+                            if(window.confirm('Are you sure want to logout?')){
+                                localStorage.removeItem('isLogin');
+                            navigate('/')
+                            }
+                            
+                        }}>Logout</Button>
                     </Form>
                 </Navbar.Collapse>
             </Container>
@@ -89,7 +107,9 @@ export default function Home() {
             {showCategoryBasedProductSection(item, index)}
             </Row>
         </Container>
-            
+        
+        <CartModal cart={cart} setCart={setCart} showCart={showCart} handleClose={handleClose} />
+
         </>
 
         )}
@@ -125,4 +145,61 @@ const Product = ({data, cart, setCart}) => {
         
         </Card.Body>
     </Card>
+}
+
+
+const CartModal = ({cart, setCart, showCart, handleClose}) => {
+    const getProductsTotal = () => {
+        let total = 0;
+        cart.forEach(item => {
+            total = total + item.price 
+        })
+        return total || 0.00;
+    }
+
+    const removeCart = (id) => {
+
+        const updatedCart = cart.filter(item => item.id !== id)
+        setCart(updatedCart)
+    }
+    return <Modal show={showCart} onHide={handleClose} size="lg">
+    <Modal.Header closeButton>
+      <Modal.Title>Your Cart Total: {getProductsTotal().toLocaleString("en-US", {style:"currency", currency:"USD"})}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+        {cart.length === 0 && <h6>Your cart is empty</h6>}
+        {cart.map((item, index) =>  <Card>
+    <Card.Body>
+        <Container>
+            <Row>
+                <Col><Card.Img variant="top" src={item.image} height={100} width={100} style={{width: 'auto'}}/></Col>
+                <Col xs={8}>
+                <Card.Title>{item.title}</Card.Title>
+        <Card.Text>
+        {item.description.substring(0, 70) + '...'}
+        <h3>{item.price.toLocaleString("en-US", {style:"currency", currency:"USD"})}</h3>
+        </Card.Text>
+        <Button variant="primary" onClick={()=>removeCart(item.id)}>
+           Remove from Cart
+        </Button>
+
+                </Col>
+            </Row>
+        </Container>
+        
+   
+  </Card.Body>
+</Card>)}
+       
+
+    </Modal.Body>
+    <Modal.Footer>
+      <Button variant="secondary" onClick={handleClose}>
+        Cancel
+      </Button>
+      <Button variant="primary" onClick={handleClose}>
+        Proceed to pay
+      </Button>
+    </Modal.Footer>
+  </Modal>
 }
