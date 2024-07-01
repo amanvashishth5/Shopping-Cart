@@ -339,14 +339,7 @@ export default function Signup(props) {
       <Button disabled={checkDisable()} variant="primary" style={{ width: '100%' }} onClick={submitHandler}>
         SIGNUP
       </Button>
-      <button onClick={async(e)=>{
-        e.preventDefault()
-        console.log(await getUsers())
-      }}>Check</button>
-      <button onClick={async(e)=>{
-        e.preventDefault()
-        await deleteUser()
-      }}>Delete All</button>
+      
     </Form>
   </>
 }
